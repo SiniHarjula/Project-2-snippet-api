@@ -1,0 +1,13 @@
+node_modules/
+.env
+.env.* 
+*.log 
+logs/ 
+npm-debug.log 
+.eslintcache 
+dist/ 
+build/ 
+coverage/ 
+Thumbs.db 
+.vscode/ 
+.idea/
