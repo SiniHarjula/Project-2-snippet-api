@@ -63,3 +63,13 @@ Without it, the browser would block the requests for security reasons.
 Overall, this project made me feel more confident in backend technologies, and I think I met all the requirements of this project. 
 I tested my API carefully and documented everything clearly. I feel that my understanding of backend development improved with this project. 
 I really liked building this project, and I feel much more confident building routes, connecting to a database, and debugging issues.
+
+## Video timestamps
+
+00:00 Introduction
+
+00:27 Code overview
+
+01:10 Demo 
+
+03:20 Conclusion
