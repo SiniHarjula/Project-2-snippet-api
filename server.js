@@ -1,8 +1,8 @@
 // Imports
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-require('dotenv').config();
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+require("dotenv").config();
 
 // Configuration
 const app = express();
@@ -13,44 +13,45 @@ app.use(cors());
 app.use(express.json());
 
 // Database connection
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('DB Connection Error:', err));
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((err) => console.error("DB Connection Error:", err));
 
 // Schema definition
 const snippetSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: true
+    required: true,
   },
-  language : {
+  language: {
     type: String,
     required: true,
-    lowercase: true
+    lowercase: true,
   },
   code: {
     type: String,
-    required: true
+    required: true,
   },
   description: String,
   tags: [String],
   created_at: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
-const Snippet = mongoose.model('Snippet', snippetSchema);
+const Snippet = mongoose.model("Snippet", snippetSchema);
 
 // Routes
 
 // Test route
-app.get('/', (req, res) => {
-  res.send('Snippet API is running!')
+app.get("/", (req, res) => {
+  res.send("Snippet API is running!");
 });
 
 // Get all snippets (with filtering and limits)
-app.get('/api/snippets', async (req, res) => {
+app.get("/api/snippets", async (req, res) => {
   try {
     const filter = {};
     if (req.query.lang) {
@@ -60,7 +61,7 @@ app.get('/api/snippets', async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
 
     const snippets = await Snippet.find(filter)
-      .sort({ created_at: -1})
+      .sort({ created_at: -1 })
       .limit(limit);
 
     res.json(snippets);
@@ -70,7 +71,7 @@ app.get('/api/snippets', async (req, res) => {
 });
 
 // Create a new snippet
-app.post('/api/snippets', async (req, res) => {
+app.post("/api/snippets", async (req, res) => {
   try {
     const newSnippet = new Snippet(req.body);
     const savedSnippet = await newSnippet.save();
@@ -81,11 +82,26 @@ app.post('/api/snippets', async (req, res) => {
 });
 
 // Get one snippet by ID
-app.get('/api/snippets/:id', async (req,res) => {
+app.get("/api/snippets/:id", async (req, res) => {
   try {
     const snippet = await Snippet.findById(req.params.id);
-    if (!snippet) return res.status(404).json({ message: 'Not found' });
+    if (!snippet) return res.status(404).json({ message: "Not found" });
     res.json(snippet);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Delete snippet
+app.delete("/api/snippets/:id", async (req, res) => {
+  try {
+    const deletedSnippet = await Snippet.findByIdAndDelete(req.params.id);
+
+    if (!deletedSnippet) {
+      return res.status(404).json({ message: "Not found" });
+    }
+
+    res.json({ message: "Snippet deleted", id: req.params.id });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
